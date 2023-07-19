@@ -55,9 +55,14 @@ class Game:
         self.update_score()
 
     def update_score(self):
-        self.score += 1
+        self.score += 1 
         if self.score % 100 == 0:
-            self.game_speed += 5    
+            self.game_speed += 5 
+
+    def update_death_count(self):
+        self.death_count = 1
+        if self.running == 2:
+            self.death_count + 1        
 
     def draw(self):
         self.clock.tick(FPS)
@@ -66,6 +71,7 @@ class Game:
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.draw_score()
+        self.draw_death_count()
         pygame.display.update()
         pygame.display.flip()
 
@@ -85,19 +91,41 @@ class Game:
         text_rect.center = (1000, 50)
         self.screen.blit(text, text_rect)
 
+    def draw_death_count(self):
+        font = pygame.font.Font(FONT_STYLE, 22)
+        text = font.render(f"Death Count: {self.death_count}", True, (0, 0, 255))
+        text_rect = text.get_rect()
+        text_rect.center = (1000, 80)
+        self.screen.blit(text, text_rect)
+
     def show_menu(self):
         self.screen.fill((255, 255, 255))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
+            font = pygame.font.Font(FONT_STYLE, 30)
             text = font.render("Press any key to start", True, (100, 149, 247))
             text_rect = text.get_rect()
             text_rect.center = (half_screen_width, half_screen_height)
             self.screen.blit(text, text_rect)
-        else:   ## tela de restart
+            ## tela de restart
+
+        elif self.death_count == 1:
             self.screen.blit(ICON, (half_screen_width - 20, half_screen_height - 140))
+            font = pygame.font.Font(FONT_STYLE, 30)
+            text = font.render("Press any key to restart", True, (100, 149, 247))
+            text_rect = text.get_rect()
+            self.score = 0
+            text_rect.center = (half_screen_width, half_screen_height)
+            self.screen.blit(text, text_rect)
+            text = font.render(f"Score: {self.score}", True, (100, 149, 247))
+            text_rect = text.get_rect()
+            text_rect.center = (half_screen_width + 20, half_screen_height + 50)
+            self.screen.blit(text, text_rect)
+            
+            
+            
             ## mostrar mensagem de "Press any key to restart"
             ## mostrar o score atingido
             ## mostrar death_count

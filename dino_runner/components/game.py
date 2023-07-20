@@ -6,10 +6,6 @@ from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 
-FONT_COLOR = (0, 0, 255)
-FONT_SIZE = 22
-FONT_STYLE = "freesansbold.ttf"
-
 
 class Game:
     def __init__(self):
@@ -24,7 +20,7 @@ class Game:
         self.score = 0
         self.death_count = 0
         self.x_pos_bg = 0
-        self.y_pos_bg = 380
+        self.y_pos_bg = 30
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
         self.power_up_manager = PowerUpManager()
@@ -39,7 +35,6 @@ class Game:
     
 
     def run(self):
-        # Game loop: events - update - draw
         self.playing = True
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
@@ -64,12 +59,12 @@ class Game:
     def update_score(self):
         self.score += 1 
         if self.score % 100 == 0:
-            self.game_speed += 5 
+            self.game_speed += 5
 
     def update_death_count(self):
-        self.death_count = 1
-        if self.running == 2:
-            self.death_count + 1        
+        if self.death_count >= 1:
+            self.score = 0
+            self.death_count += 1       
 
     def draw(self):
         self.clock.tick(FPS)
@@ -102,11 +97,14 @@ class Game:
         )
 
     def draw_death_count(self):
-        font = pygame.font.Font(FONT_STYLE, 22)
-        text = font.render(f"Death Count: {self.death_count}", True, (0, 0, 255))
-        text_rect = text.get_rect()
-        text_rect.center = (1000, 80)
-        self.screen.blit(text, text_rect)
+        draw_message_component(
+            f"Death Count: {self.death_count}",
+            self.screen,
+            pos_x_center=1000,
+            pos_y_center=80
+        )
+           
+       
 
     def draw_power_up_time(self):
         if self.player.has_power_up:
